@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 import {
   AllowNull,
   Column,
@@ -8,6 +8,7 @@ import {
   Unique,
 } from 'sequelize-typescript';
 import { MaxLength } from 'class-validator';
+import { Role } from '../utils/enum';
 
 @Table({ tableName: 'user' })
 export class User extends Model<User> {
@@ -35,6 +36,12 @@ export class User extends Model<User> {
   @MaxLength(250)
   @Column
   password: string;
+
+  @AllowNull(false)
+  @Column({
+    type: DataTypes.ENUM(Role.RENTER, Role.LANDLORD),
+  })
+  role: string;
 
   @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column({ type: 'TIMESTAMP' })

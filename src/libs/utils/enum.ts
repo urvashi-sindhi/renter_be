@@ -10,3 +10,8 @@ export enum ResponseStatus {
 export enum ApiTag {
   USER = 'User',
 }
+
+export enum Role {
+  RENTER = 'Renter',
+  LANDLORD = 'Landlord',
+}
