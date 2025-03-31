@@ -12,7 +12,7 @@ export class UserService {
   async listUsers() {
     const usersList = await this.userModel.findAll();
 
-    if (usersList && usersList.length === 0) {
+    if (usersList.length === 0) {
       Logger.error(`Users ${Messages.NOT_FOUND}`);
       return handleResponse(
         HttpStatus.NOT_FOUND,
