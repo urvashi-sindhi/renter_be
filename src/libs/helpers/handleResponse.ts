@@ -1,13 +1,13 @@
 import { HttpStatus } from '@nestjs/common';
-import { ResponseStatus } from 'src/libs/utils/enum';
+import { ResponseStatus } from '../utils/enum';
 
-export const handleResponse = (
+export function GeneralResponse(
   statusCode: number,
   status: string,
   message?: string,
   data?: any,
   error?: any,
-) => {
+) {
   if (status === ResponseStatus.SUCCESS) {
     return {
       statusCode: statusCode || HttpStatus.OK,
@@ -16,13 +16,13 @@ export const handleResponse = (
       data,
       error,
     };
-  } else {
-    return {
-      statusCode: statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
-      status,
-      message,
-      data,
-      error,
-    };
   }
-};
+
+  throw {
+    statusCode: statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
+    status,
+    message,
+    data,
+    error,
+  };
+}
