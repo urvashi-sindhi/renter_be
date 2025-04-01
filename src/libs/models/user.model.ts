@@ -1,17 +1,25 @@
 import { DataTypes, Sequelize } from 'sequelize';
 import {
   AllowNull,
+  BelongsTo,
   Column,
   Default,
+  ForeignKey,
   Model,
   Table,
   Unique,
 } from 'sequelize-typescript';
 import { MaxLength } from 'class-validator';
 import { Role } from '../utils/enum';
+import { Address } from './address.model';
 
 @Table({ tableName: 'user' })
 export class User extends Model<User> {
+  @ForeignKey(() => Address)
+  @MaxLength(11)
+  @Column({ allowNull: false })
+  address_id: number;
+
   @AllowNull(false)
   @MaxLength(20)
   @Column
@@ -60,4 +68,7 @@ export class User extends Model<User> {
     ),
   })
   updated_at: Date;
+
+  @BelongsTo(() => Address)
+  address: Address;
 }

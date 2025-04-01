@@ -5,10 +5,11 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from 'src/libs/models/user.model';
 import { JwtStrategy } from 'src/libs/services/strategy/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
+import { Address } from 'src/libs/models/address.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([User]),
+    SequelizeModule.forFeature([User, Address]),
     JwtModule.register({
       secret: process.env.JWTSecretKey,
       signOptions: { expiresIn: '24h' },
