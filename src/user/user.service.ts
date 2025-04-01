@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { handleResponse } from 'src/libs/helpers/handleResponse';
+import { GeneralResponse } from 'src/libs/helpers/handleResponse';
 import { User } from 'src/libs/models/user.model';
 import { ResponseStatus, Role } from 'src/libs/utils/enum';
 import { Messages } from 'src/libs/utils/message';
@@ -23,7 +23,7 @@ export class UserService {
 
     if (existingUser) {
       Logger.error(`User ${Messages.ALREADY_EXIST}`);
-      return handleResponse(
+      return GeneralResponse(
         HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
         `User ${Messages.ALREADY_EXIST}`,
@@ -36,7 +36,7 @@ export class UserService {
 
     if (phoneExists) {
       Logger.error(`Phone number ${Messages.ALREADY_EXIST}`);
-      return handleResponse(
+      return GeneralResponse(
         HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
         `Phone number ${Messages.ALREADY_EXIST}`,
@@ -51,7 +51,7 @@ export class UserService {
     } as User);
 
     Logger.log(Messages.REGISTER_SUCCESS);
-    return handleResponse(
+    return GeneralResponse(
       HttpStatus.CREATED,
       ResponseStatus.SUCCESS,
       undefined,
@@ -70,7 +70,7 @@ export class UserService {
 
     if (!findUser) {
       Logger.error(Messages.CREDENTIALS_NOT_MATCH);
-      return handleResponse(
+      return GeneralResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
         Messages.CREDENTIALS_NOT_MATCH,
@@ -79,12 +79,12 @@ export class UserService {
 
     const comparePassword = await bcrypt.compare(
       dto.password,
-      findUser.password,
+      findUser?.dataValues.password,
     );
 
     if (!comparePassword) {
       Logger.error(Messages.CREDENTIALS_NOT_MATCH);
-      return handleResponse(
+      return GeneralResponse(
         HttpStatus.UNAUTHORIZED,
         ResponseStatus.ERROR,
         Messages.CREDENTIALS_NOT_MATCH,
@@ -92,13 +92,13 @@ export class UserService {
     }
 
     const token = await this.jwt.signAsync({
-      id: findUser.id,
-      role: findUser.role,
-      email: findUser.email,
+      id: findUser?.dataValues.id,
+      role: findUser?.dataValues.role,
+      email: findUser?.dataValues.email,
     });
 
     Logger.log(Messages.LOGIN_SUCCESS);
-    return handleResponse(
+    return GeneralResponse(
       HttpStatus.OK,
       ResponseStatus.SUCCESS,
       Messages.LOGIN_SUCCESS,
@@ -111,14 +111,14 @@ export class UserService {
 
     if (usersList.length === 0) {
       Logger.error(`Users ${Messages.NOT_FOUND}`);
-      return handleResponse(
+      return GeneralResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
         `Users ${Messages.NOT_FOUND}`,
       );
     }
     Logger.log(`User ${Messages.GET_SUCCESS}`);
-    return handleResponse(
+    return GeneralResponse(
       HttpStatus.OK,
       ResponseStatus.SUCCESS,
       undefined,
