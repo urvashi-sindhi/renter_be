@@ -38,6 +38,7 @@ export class User extends Model<User> {
   password: string;
 
   @AllowNull(false)
+  @Default(Role.RENTER)
   @Column({
     type: DataTypes.ENUM(Role.RENTER, Role.LANDLORD),
   })

@@ -65,20 +65,6 @@ export class RegisterUserDto {
   password: string;
 
   @ApiProperty({
-    example: 'Landlord',
-    type: 'string',
-    format: 'string',
-    required: true,
-  })
-  @IsEnum({
-    Renter: Role.RENTER,
-    Landlord: Role.LANDLORD,
-  })
-  @IsString()
-  @IsNotEmpty()
-  role: string;
-
-  @ApiProperty({
     example: 'Add token',
     type: 'string',
     format: 'string',
@@ -90,20 +76,6 @@ export class RegisterUserDto {
 }
 
 export class LoginUserDto {
-  @ApiProperty({
-    example: 'Landlord',
-    type: 'string',
-    format: 'string',
-    required: true,
-  })
-  @IsEnum({
-    Renter: Role.RENTER,
-    Landlord: Role.LANDLORD,
-  })
-  @IsString()
-  @IsNotEmpty()
-  role: string;
-
   @ApiProperty({
     example: 'john@gmail.com',
     type: 'string',
