@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
 } from 'class-validator';
@@ -76,6 +77,16 @@ export class RegisterUserDto {
   @IsString()
   @IsNotEmpty()
   role: string;
+
+  @ApiProperty({
+    example: 'Add token',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  device_token: string;
 }
 
 export class LoginUserDto {

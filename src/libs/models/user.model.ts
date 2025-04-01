@@ -43,6 +43,10 @@ export class User extends Model<User> {
   })
   role: string;
 
+  @AllowNull(true)
+  @Column
+  device_token: string;
+
   @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column({ type: 'TIMESTAMP' })
   created_at: Date;
