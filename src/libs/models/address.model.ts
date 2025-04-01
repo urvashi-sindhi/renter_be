@@ -33,9 +33,19 @@ export class Address extends Model<Address> {
   city_id: number;
 
   @AllowNull(false)
-  @MaxLength(20)
+  @MaxLength(50)
   @Column
-  address: string;
+  address_line1: string;
+
+  @AllowNull(false)
+  @MaxLength(50)
+  @Column
+  address_line2: string;
+
+  @AllowNull(false)
+  @MaxLength(50)
+  @Column
+  pin_code: number;
 
   @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column({ type: 'TIMESTAMP' })

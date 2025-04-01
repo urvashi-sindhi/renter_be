@@ -1,11 +1,46 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   Matches,
+  ValidateNested,
 } from 'class-validator';
+
+export class AddressDto {
+  @ApiProperty({
+    example: '102',
+    type: 'string',
+    format: 'string',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  address_line1: string;
+
+  @ApiProperty({
+    example: 'gota',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  address_line2: string;
+
+  @ApiProperty({
+    example: 387001,
+    type: 'number',
+    format: 'number',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  pin_code: number;
+}
 
 export class RegisterUserDto {
   @ApiProperty({
@@ -71,6 +106,12 @@ export class RegisterUserDto {
   @IsString()
   @IsOptional()
   device_token: string;
+
+  @ApiProperty({ type: AddressDto, required: false })
+  @ValidateNested({ each: true })
+  @Type(() => AddressDto)
+  @IsOptional()
+  address: AddressDto;
 }
 
 export class LoginUserDto {
