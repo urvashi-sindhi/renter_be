@@ -1,16 +1,17 @@
 import { DataTypes, Sequelize } from 'sequelize';
 import {
   AllowNull,
+  BelongsTo,
   Column,
   Default,
   ForeignKey,
   Model,
   Table,
-  Unique,
 } from 'sequelize-typescript';
 import { MaxLength } from 'class-validator';
-import { Role } from '../utils/enum';
+import { Role, Sharing } from '../utils/enum';
 import { User } from './user.model';
+import { Address } from './address.model';
 
 @Table({ tableName: 'properties' })
 export class Properties extends Model<Properties> {
@@ -18,6 +19,11 @@ export class Properties extends Model<Properties> {
   @MaxLength(11)
   @Column({ allowNull: false })
   landlord_id: number;
+
+  @ForeignKey(() => Address)
+  @MaxLength(11)
+  @Column({ allowNull: false })
+  address_id: number;
 
   @AllowNull(false)
   @MaxLength(50)
@@ -29,23 +35,25 @@ export class Properties extends Model<Properties> {
   description: string;
 
   @AllowNull(false)
-  @Column
-  phone_number: string;
+  @Column({
+    type: DataTypes.ENUM(Sharing.SINGLE, Sharing.DOUBLE, Sharing.TRIPLE),
+  })
+  sharing_count: string;
 
-  @AllowNull(true)
-  @MaxLength(250)
-  @Column
-  password: string;
+  @Column({ defaultValue: false })
+  food_availability: boolean;
 
   @AllowNull(false)
   @Column({
-    type: DataTypes.ENUM(Role.RENTER, Role.LANDLORD),
+    type: DataTypes.TEXT,
   })
-  role: string;
+  facility: string;
 
-  @AllowNull(true)
-  @Column
-  device_token: string;
+  @Column({ defaultValue: false })
+  ac_availability: boolean;
+
+  @Column({ type: DataTypes.FLOAT })
+  rent_price: number;
 
   @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column({ type: 'TIMESTAMP' })
@@ -59,4 +67,10 @@ export class Properties extends Model<Properties> {
     ),
   })
   updated_at: Date;
+
+  @BelongsTo(() => Address)
+  address: Address;
+
+  @BelongsTo(() => User)
+  user: User;
 }

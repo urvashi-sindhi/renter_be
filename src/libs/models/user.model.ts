@@ -5,6 +5,7 @@ import {
   Column,
   Default,
   ForeignKey,
+  HasMany,
   Model,
   Table,
   Unique,
@@ -12,6 +13,7 @@ import {
 import { MaxLength } from 'class-validator';
 import { Role } from '../utils/enum';
 import { Address } from './address.model';
+import { Properties } from './properties.model';
 
 @Table({ tableName: 'user' })
 export class User extends Model<User> {
@@ -71,4 +73,7 @@ export class User extends Model<User> {
 
   @BelongsTo(() => Address)
   address: Address;
+
+  @HasMany(() => Properties, { foreignKey: 'landlord_id' })
+  properties: Properties;
 }
