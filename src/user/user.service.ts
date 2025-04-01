@@ -48,13 +48,14 @@ export class UserService {
     const createUser = await this.userModel.create({
       ...dto,
       password: hashedPassword,
+      address_id: 1,
     } as User);
 
     Logger.log(Messages.REGISTER_SUCCESS);
     return GeneralResponse(
       HttpStatus.CREATED,
       ResponseStatus.SUCCESS,
-      undefined,
+      Messages.REGISTER_SUCCESS,
       {
         id: createUser.id,
       },
@@ -93,7 +94,6 @@ export class UserService {
 
     const token = await this.jwt.signAsync({
       id: findUser?.dataValues.id,
-      role: findUser?.dataValues.role,
       email: findUser?.dataValues.email,
     });
 
@@ -102,7 +102,7 @@ export class UserService {
       HttpStatus.OK,
       ResponseStatus.SUCCESS,
       Messages.LOGIN_SUCCESS,
-      token,
+      { token },
     );
   }
 

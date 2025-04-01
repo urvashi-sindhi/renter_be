@@ -7,12 +7,16 @@ import { UserModule } from './user/user.module';
 import { User } from './libs/models/user.model';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
+import { City } from './libs/models/city.model';
+import { State } from './libs/models/state.model';
+import { Country } from './libs/models/country.model';
+import { Address } from './libs/models/address.model';
 dotenv.config();
 
 const config: any = {
   dialect: 'mysql',
   autoLoadModels: true,
-  models: [User],
+  models: [User, City, State, Country, Address],
   define: {
     timestamps: false,
   },
