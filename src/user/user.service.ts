@@ -48,6 +48,7 @@ export class UserService {
     const createUser = await this.userModel.create({
       ...dto,
       password: hashedPassword,
+      address_id: 1,
     } as User);
 
     Logger.log(Messages.REGISTER_SUCCESS);
