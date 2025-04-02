@@ -85,8 +85,6 @@ export class PropertiesService {
   async listOfProperties(dto: listOfPropertiesDto) {
     const { sortKey, sortValue, searchBar, page, pageSize } = dto;
 
-    console.log('searchBar', searchBar);
-
     const sortQuery = sorting(sortKey, sortValue);
 
     const whereCondition: any = {
