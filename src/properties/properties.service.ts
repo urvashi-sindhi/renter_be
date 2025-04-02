@@ -97,17 +97,17 @@ export class PropertiesService {
       include: [
         {
           model: this.userModel,
-          require: true,
+          required: true,
           attributes: ['id', 'first_name', 'last_name'],
         },
         {
           model: this.areaModel,
-          require: true,
+          required: true,
           attributes: ['id', 'name'],
         },
         {
           model: this.addressModel,
-          require: true,
+          required: true,
           attributes: {
             exclude: ['created_at', 'updated_at'],
           },
@@ -164,6 +164,51 @@ export class PropertiesService {
       ResponseStatus.SUCCESS,
       undefined,
       paginatedResult.propertyDetails,
+    );
+  }
+
+  async viewProperty(propertyId: number) {
+    const propertyData = await this.propertiesModel.findOne({
+      where: { id: propertyId },
+      attributes: {
+        exclude: ['created_at', 'updated_at'],
+      },
+      include: [
+        {
+          model: this.userModel,
+          required: true,
+          attributes: ['id', 'first_name', 'last_name'],
+        },
+        {
+          model: this.areaModel,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+        {
+          model: this.addressModel,
+          required: true,
+          attributes: {
+            exclude: ['created_at', 'updated_at'],
+          },
+        },
+      ],
+    });
+
+    if (!propertyData) {
+      Logger.error(`Property ${Messages.NOT_FOUND}`);
+      return GeneralResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Property ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    Logger.error(`Property ${Messages.NOT_FOUND}`);
+    return GeneralResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      propertyData,
     );
   }
 }

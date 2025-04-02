@@ -3,6 +3,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Req,
   UploadedFiles,
@@ -12,7 +13,7 @@ import {
 import { PropertiesService } from './properties.service';
 import { FileUploadDto } from './dto/fileUpload.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiParam } from '@nestjs/swagger';
 import { storage } from 'src/libs/helpers/multer';
 import { AddPropertyDto, listOfPropertiesDto } from './dto/properties.dto';
 import { Roles } from 'src/libs/services/decorator/auth/roles.decorator';
@@ -55,5 +56,15 @@ export class PropertiesController {
   @Post('listOfProperties')
   listOfProperties(@Body() dto: listOfPropertiesDto) {
     return this.propertiesService.listOfProperties(dto);
+  }
+
+  @Roles(Role.RENTER)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({ example: 1, name: 'propertyId', required: true })
+  @Post('viewProperty/:propertyId')
+  viewProperty(@Param('propertyId') propertyId: number) {
+    return this.propertiesService.viewProperty(propertyId);
   }
 }

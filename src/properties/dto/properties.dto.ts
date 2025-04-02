@@ -33,6 +33,16 @@ export class AddPropertyDto {
   })
   @IsNumber()
   @IsOptional()
+  area_id: number;
+
+  @ApiProperty({
+    example: 1,
+    type: 'number',
+    format: 'number',
+    required: false,
+  })
+  @IsNumber()
+  @IsOptional()
   landlord_id: number;
 
   @ApiProperty({
