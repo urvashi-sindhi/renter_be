@@ -124,6 +124,7 @@ export class UserService {
 
     const token = await this.jwt.signAsync({
       id: findUser?.dataValues.id,
+      role: findUser?.dataValues.role,
       email: findUser?.dataValues.email,
     });
 
