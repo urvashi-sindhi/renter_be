@@ -8,97 +8,71 @@ import { LoginUserDto, RegisterUserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Address } from 'src/libs/models/address.model';
-import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectConnection() private sequelize: Sequelize,
     @InjectModel(User) private readonly userModel: typeof User,
     @InjectModel(Address) private readonly addressModel: typeof Address,
     private readonly jwt: JwtService,
   ) {}
 
   async registerUser(dto: RegisterUserDto) {
-    let transaction;
-    try {
-      const { email, password, phone_number, address, ...rest } = dto;
-      const salt = 10;
+    const { email, password, phone_number, address, ...rest } = dto;
+    const salt = 10;
 
-      transaction = await this.sequelize.transaction();
+    const existingUser = await this.userModel.findOne({ where: { email } });
 
-      const existingUser = await this.userModel.findOne({ where: { email } });
-
-      if (existingUser) {
-        Logger.error(`User ${Messages.ALREADY_EXIST}`);
-        return GeneralResponse(
-          HttpStatus.BAD_REQUEST,
-          ResponseStatus.ERROR,
-          `User ${Messages.ALREADY_EXIST}`,
-        );
-      }
-
-      const phoneExists = await this.userModel.findOne({
-        where: { phone_number },
-      });
-
-      if (phoneExists) {
-        Logger.error(`Phone number ${Messages.ALREADY_EXIST}`);
-        return GeneralResponse(
-          HttpStatus.BAD_REQUEST,
-          ResponseStatus.ERROR,
-          `Phone number ${Messages.ALREADY_EXIST}`,
-        );
-      }
-
-      const hashedPassword: string = await bcrypt.hash(password, salt);
-
-      const createAddress = await this.addressModel.create(
-        {
-          country_id: 1,
-          state_id: 1,
-          city_id: 1,
-          address_line1: address.address_line1,
-          address_line2: address.address_line2,
-          pin_code: address.pin_code,
-        } as Address,
-        { transaction },
-      );
-
-      const createUser = await this.userModel.create(
-        {
-          phone_number,
-          email,
-          ...rest,
-          password: hashedPassword,
-          address_id: createAddress.id,
-        } as User,
-        { transaction },
-      );
-
-      await transaction.commit();
-
-      Logger.log(Messages.REGISTER_SUCCESS);
+    if (existingUser) {
+      Logger.error(`User ${Messages.ALREADY_EXIST}`);
       return GeneralResponse(
-        HttpStatus.CREATED,
-        ResponseStatus.SUCCESS,
-        Messages.REGISTER_SUCCESS,
-        {
-          id: createUser.id,
-        },
-      );
-    } catch (error: any) {
-      await transaction.rollback();
-
-      Logger.error(Messages.SERVER_ERROR);
-      return GeneralResponse(
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
-        Messages.SERVER_ERROR,
-        undefined,
-        error.message,
+        `User ${Messages.ALREADY_EXIST}`,
       );
     }
+
+    const phoneExists = await this.userModel.findOne({
+      where: { phone_number },
+    });
+
+    if (phoneExists) {
+      Logger.error(`Phone number ${Messages.ALREADY_EXIST}`);
+      return GeneralResponse(
+        HttpStatus.BAD_REQUEST,
+        ResponseStatus.ERROR,
+        `Phone number ${Messages.ALREADY_EXIST}`,
+      );
+    }
+
+    const hashedPassword: string = await bcrypt.hash(password, salt);
+
+    const createAddress = await this.addressModel.create({
+      country_id: 1,
+      state_id: 1,
+      city_id: 1,
+      address_line1: address.address_line1,
+      address_line2: address.address_line2,
+      pin_code: address.pin_code,
+    } as Address);
+
+    const createUser = await this.userModel.create({
+      phone_number,
+      email,
+      ...rest,
+      password: hashedPassword,
+      address_id: createAddress.id,
+    } as User);
+
+    Logger.log(Messages.REGISTER_SUCCESS);
+    return GeneralResponse(
+      HttpStatus.CREATED,
+      ResponseStatus.SUCCESS,
+      Messages.REGISTER_SUCCESS,
+      {
+        id: createUser.id,
+      },
+    );
   }
 
   async loginUser(dto: LoginUserDto) {
