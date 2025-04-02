@@ -11,7 +11,23 @@ import { Address } from 'src/libs/models/address.model';
 import { AddPropertyDto, listOfPropertiesDto } from './dto/properties.dto';
 import { Op, Sequelize } from 'sequelize';
 import { Area } from 'src/libs/models/area.model';
-import { paginateWithData, sorting } from 'src/libs/helpers/commanFunction';
+import {
+  paginateWithData,
+  sendFCMNotification,
+  sorting,
+} from 'src/libs/helpers/commanFunction';
+import { Notification } from 'src/libs/models/notification.model';
+import * as admin from 'firebase-admin';
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    }),
+  });
+}
 @Injectable()
 export class PropertiesService {
   constructor(
@@ -22,6 +38,8 @@ export class PropertiesService {
     @InjectModel(User) private readonly userModel: typeof User,
     @InjectModel(Address) private readonly addressModel: typeof Address,
     @InjectModel(Area) private readonly areaModel: typeof Area,
+    @InjectModel(Notification)
+    private readonly notificationModel: typeof Notification,
   ) {}
 
   async fileUpload(
@@ -73,6 +91,33 @@ export class PropertiesService {
           property_id: addProperty.id,
         } as PropertyImage);
       }
+    }
+
+    const users = await this.userModel.findAll({
+      where: {
+        device_token: { [Op.not]: null as unknown as string },
+      },
+      attributes: ['id', 'device_token'],
+    });
+
+    const deviceTokens = users.map((user) => user?.dataValues?.device_token);
+
+    let notificationTitle = 'New Properties';
+
+    let notificationBody = `${dto.name} - ${dto.description}`;
+
+    await sendFCMNotification(
+      deviceTokens,
+      notificationTitle,
+      notificationBody,
+    );
+
+    for (const user of users) {
+      await this.notificationModel.create({
+        user_id: user.id,
+        title: notificationTitle,
+        description: notificationBody,
+      } as Notification);
     }
 
     Logger.log(`Property ${Messages.ADDED_SUCCESS}`);

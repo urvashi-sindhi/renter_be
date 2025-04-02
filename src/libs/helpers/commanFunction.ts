@@ -1,3 +1,9 @@
+import { HttpStatus, Logger } from '@nestjs/common';
+import { GeneralResponse } from './handleResponse';
+import { ResponseStatus } from '../utils/enum';
+import { Messages } from '../utils/message';
+import * as admin from 'firebase-admin';
+
 export async function paginateWithData(
   model: any,
   page?: number,
@@ -42,4 +48,70 @@ export function sorting(sortKey: string, sortValue: string) {
   }
 
   return sortQuery;
+}
+
+export async function sendFCMNotification(tokens, title, body) {
+  if (!tokens || tokens.length === 0) {
+    Logger.error(Messages.DEVICE_TOKEN_NOT_FOUND);
+    return GeneralResponse(
+      HttpStatus.NOT_FOUND,
+      ResponseStatus.ERROR,
+      Messages.DEVICE_TOKEN_NOT_FOUND,
+    );
+  }
+
+  const message = {
+    tokens,
+    notification: { title, body },
+    data: { click_action: 'NOTIFICATION_CLICK' },
+    apns: {
+      payload: {
+        aps: {
+          alert: { title, body },
+          sound: 'default',
+          contentAvailable: true,
+        },
+      },
+    },
+    webpush: {
+      notification: {
+        title,
+        body,
+      },
+    },
+  };
+
+  try {
+    Logger.log(`Sending notifications to ${tokens.length} devices.`);
+    const response = await admin.messaging().sendEachForMulticast(message);
+
+    if (response.failureCount > 0) {
+      Logger.warn(
+        `Notification partially sent: ${response.successCount} succeeded, ${response.failureCount} failed.`,
+      );
+    } else {
+      Logger.log(`Notification sent successfully to all devices.`);
+    }
+
+    return GeneralResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      Messages.NOTIFICATION_SENT_SUCCESS,
+      {
+        successCount: response.successCount,
+        failureCount: response.failureCount,
+        failedTokens: response.responses
+          .map((res, index) => (!res.success ? tokens[index] : null))
+          .filter(Boolean),
+      },
+    );
+  } catch (error) {
+    Logger.error(Messages.NOTIFICATION_SEND_FAILED, error);
+    return GeneralResponse(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      ResponseStatus.ERROR,
+      Messages.NOTIFICATION_SEND_FAILED,
+      { error: error.message },
+    );
+  }
 }

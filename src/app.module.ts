@@ -15,6 +15,7 @@ import { PropertiesModule } from './properties/properties.module';
 import { Properties } from './libs/models/properties.model';
 import { PropertyImage } from './libs/models/propertyImages.model';
 import { Area } from './libs/models/area.model';
+import { Notification } from './libs/models/notification.model';
 dotenv.config();
 
 const config: any = {
@@ -29,6 +30,7 @@ const config: any = {
     Properties,
     PropertyImage,
     Area,
+    Notification,
   ],
   define: {
     timestamps: false,
