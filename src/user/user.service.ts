@@ -67,6 +67,7 @@ export class UserService {
       country_id: 1,
       state_id: 1,
       city_id: 1,
+      area_id: address.area_id,
       address_line1: address.address_line1,
       address_line2: address.address_line2,
       pin_code: address.pin_code,

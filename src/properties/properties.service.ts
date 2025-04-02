@@ -10,8 +10,8 @@ import { User } from 'src/libs/models/user.model';
 import { Address } from 'src/libs/models/address.model';
 import { AddPropertyDto, listOfPropertiesDto } from './dto/properties.dto';
 import { Op, Sequelize } from 'sequelize';
-import { paginateWithData, sorting } from 'src/libs/helpers/commanFunction';
 import { Area } from 'src/libs/models/area.model';
+import { paginateWithData, sorting } from 'src/libs/helpers/commanFunction';
 @Injectable()
 export class PropertiesService {
   constructor(
