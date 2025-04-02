@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -66,5 +67,14 @@ export class PropertiesController {
   @Post('viewProperty/:propertyId')
   viewProperty(@Param('propertyId') propertyId: number) {
     return this.propertiesService.viewProperty(propertyId);
+  }
+
+  @Roles(Role.RENTER)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Get('listOfNotification')
+  listOfNotifications(@Req() req: any) {
+    return this.propertiesService.listOfNotifications(req);
   }
 }

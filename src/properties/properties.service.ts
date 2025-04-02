@@ -256,4 +256,28 @@ export class PropertiesService {
       propertyData,
     );
   }
+
+  async listOfNotifications(req: any) {
+    const notificationData = await this.notificationModel.findAll({
+      attributes: ['id', 'user_id', 'title', 'description', 'created_at'],
+      where: { user_id: req.user.id, read: false },
+    });
+
+    if (notificationData.length === 0) {
+      Logger.error(`Notification data ${Messages.NOT_FOUND}`);
+      return GeneralResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Notification data ${Messages.NOT_FOUND}`,
+        notificationData,
+      );
+    }
+    Logger.log(`Notification ${Messages.GET_SUCCESS}`);
+    return GeneralResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      notificationData,
+    );
+  }
 }
