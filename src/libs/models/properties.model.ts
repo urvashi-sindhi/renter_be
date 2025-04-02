@@ -5,13 +5,15 @@ import {
   Column,
   Default,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { MaxLength } from 'class-validator';
-import { Role, Sharing } from '../utils/enum';
+import { Sharing } from '../utils/enum';
 import { User } from './user.model';
 import { Address } from './address.model';
+import { PropertyImage } from './propertyImages.model';
 
 @Table({ tableName: 'properties' })
 export class Properties extends Model<Properties> {
@@ -73,4 +75,7 @@ export class Properties extends Model<Properties> {
 
   @BelongsTo(() => User)
   user: User;
+
+  @HasMany(() => PropertyImage, { foreignKey: 'property_id' })
+  propertyImage: PropertyImage;
 }

@@ -11,12 +11,15 @@ import { City } from './libs/models/city.model';
 import { State } from './libs/models/state.model';
 import { Country } from './libs/models/country.model';
 import { Address } from './libs/models/address.model';
+import { PropertiesModule } from './properties/properties.module';
+import { Properties } from './libs/models/properties.model';
+import { PropertyImage } from './libs/models/propertyImages.model';
 dotenv.config();
 
 const config: any = {
   dialect: 'mysql',
   autoLoadModels: true,
-  models: [User, City, State, Country, Address],
+  models: [User, City, State, Country, Address, Properties, PropertyImage],
   define: {
     timestamps: false,
   },
@@ -34,6 +37,7 @@ const config: any = {
       logging: true,
     }),
     UserModule,
+    PropertiesModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
