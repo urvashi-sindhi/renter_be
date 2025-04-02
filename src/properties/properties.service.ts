@@ -2,15 +2,13 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Properties } from 'src/libs/models/properties.model';
 import { PropertyImage } from 'src/libs/models/propertyImages.model';
-import { AddPropertyDto, listOfPropertiesDto } from './dto/properties.dto';
 import { Messages } from 'src/libs/utils/message';
 import { GeneralResponse } from 'src/libs/helpers/handleResponse';
 import { ResponseStatus } from 'src/libs/utils/enum';
 import { FileUploadDto } from './dto/fileUpload.dto';
-import { paginateWithData, sorting } from 'src/libs/helpers/commanFunction';
-import { Op, Sequelize } from 'sequelize';
 import { User } from 'src/libs/models/user.model';
 import { Address } from 'src/libs/models/address.model';
+import { AddPropertyDto } from './dto/properties.dto';
 @Injectable()
 export class PropertiesService {
   constructor(
@@ -79,83 +77,6 @@ export class PropertiesService {
       ResponseStatus.SUCCESS,
       `Property ${Messages.ADDED_SUCCESS}`,
       { id: addProperty.id },
-    );
-  }
-
-  async listOfProperties(dto: listOfPropertiesDto) {
-    const { sortKey, sortValue, searchBar, page, pageSize } = dto;
-
-    const sortQuery = sorting(sortKey, sortValue);
-
-    const whereCondition: any = {
-      where: { address_id: dto.address_id },
-      attributes: {
-        exclude: ['created_at', 'updated_at'],
-      },
-      include: [
-        {
-          model: this.userModel,
-          require: true,
-          attributes: ['id', 'first_name', 'last_name'],
-        },
-        {
-          model: this.addressModel,
-          require: true,
-          attributes: {
-            exclude: ['created_at', 'updated_at'],
-          },
-        },
-      ],
-      order: sortQuery,
-    };
-
-    if (searchBar) {
-      whereCondition.where[Op.or] = [
-        { name: { [Op.like]: `%${searchBar}%` } },
-        { description: { [Op.like]: `%${searchBar}%` } },
-        { sharing_count: { [Op.like]: `%${searchBar}%` } },
-        { food_availability: { [Op.like]: `%${searchBar}%` } },
-        { facility: { [Op.like]: `%${searchBar}%` } },
-        { ac_availability: { [Op.like]: `%${searchBar}%` } },
-        {
-          rent_price: {
-            [Op.or]: [
-              { [Op.eq]: searchBar },
-              Sequelize.where(
-                Sequelize.cast(Sequelize.col('rent_price'), 'TEXT'),
-                { [Op.like]: `%${searchBar}%` },
-              ),
-            ],
-          },
-        },
-        { '$user.first_name$': { [Op.like]: `%${searchBar}%` } },
-        { '$user.last_name$': { [Op.like]: `%${searchBar}%` } },
-      ];
-    }
-
-    const paginatedResult = await paginateWithData(
-      this.propertiesModel,
-      page,
-      pageSize,
-      whereCondition,
-      'propertyDetails',
-    );
-
-    if (paginatedResult.propertyDetails.length === 0) {
-      Logger.log(`Property ${Messages.NOT_FOUND}`);
-      return GeneralResponse(
-        HttpStatus.NOT_FOUND,
-        ResponseStatus.ERROR,
-        `Property ${Messages.NOT_FOUND}`,
-      );
-    }
-
-    Logger.log(`Property ${Messages.GET_SUCCESS}`);
-    return GeneralResponse(
-      HttpStatus.OK,
-      ResponseStatus.SUCCESS,
-      undefined,
-      paginatedResult.propertyDetails,
     );
   }
 }
