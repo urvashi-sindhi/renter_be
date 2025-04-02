@@ -6,10 +6,17 @@ import { Properties } from 'src/libs/models/properties.model';
 import { PropertyImage } from 'src/libs/models/propertyImages.model';
 import { User } from 'src/libs/models/user.model';
 import { Address } from 'src/libs/models/address.model';
+import { Area } from 'src/libs/models/area.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Properties, PropertyImage, User, Address]),
+    SequelizeModule.forFeature([
+      Properties,
+      PropertyImage,
+      User,
+      Address,
+      Area,
+    ]),
   ],
   controllers: [PropertiesController],
   providers: [PropertiesService],

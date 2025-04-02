@@ -14,9 +14,15 @@ import { State } from './state.model';
 import { Country } from './country.model';
 import { City } from './city.model';
 import { User } from './user.model';
+import { Area } from './area.model';
 
 @Table({ tableName: 'address' })
 export class Address extends Model<Address> {
+  @ForeignKey(() => Area)
+  @MaxLength(11)
+  @Column({ allowNull: false })
+  area_id: number;
+
   @ForeignKey(() => Country)
   @MaxLength(11)
   @Column({ allowNull: false })
@@ -68,6 +74,9 @@ export class Address extends Model<Address> {
 
   @BelongsTo(() => City)
   city: City;
+
+  @BelongsTo(() => Area)
+  area: Area;
 
   @HasOne(() => User, { foreignKey: 'address_id' })
   user: User;
