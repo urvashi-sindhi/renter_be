@@ -16,13 +16,13 @@ export function GeneralResponse(
       data,
       error,
     };
+  } else {
+    return {
+      statusCode: statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
+      status,
+      message,
+      data,
+      error,
+    };
   }
-
-  throw {
-    statusCode: statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
-    status,
-    message,
-    data,
-    error,
-  };
 }
