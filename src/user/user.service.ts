@@ -8,14 +8,30 @@ import { LoginUserDto, RegisterUserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Address } from 'src/libs/models/address.model';
+import { Area } from 'src/libs/models/area.model';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User) private readonly userModel: typeof User,
     @InjectModel(Address) private readonly addressModel: typeof Address,
+    @InjectModel(Area) private readonly areaModel: typeof Area,
     private readonly jwt: JwtService,
   ) {}
+
+  async listOfAreas() {
+    const areaData = await this.areaModel.findAll({
+      attributes: ['id', 'name'],
+    });
+
+    Logger.log(`Area is ${Messages.GET_SUCCESS}`);
+    return GeneralResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      areaData || [],
+    );
+  }
 
   async registerUser(dto: RegisterUserDto) {
     const { email, password, phone_number, address, ...rest } = dto;
@@ -51,6 +67,7 @@ export class UserService {
       country_id: 1,
       state_id: 1,
       city_id: 1,
+      area_id: address.area_id,
       address_line1: address.address_line1,
       address_line2: address.address_line2,
       pin_code: address.pin_code,

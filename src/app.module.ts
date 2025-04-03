@@ -14,12 +14,22 @@ import { Address } from './libs/models/address.model';
 import { PropertiesModule } from './properties/properties.module';
 import { Properties } from './libs/models/properties.model';
 import { PropertyImage } from './libs/models/propertyImages.model';
+import { Area } from './libs/models/area.model';
 dotenv.config();
 
 const config: any = {
   dialect: 'mysql',
   autoLoadModels: true,
-  models: [User, City, State, Country, Address, Properties, PropertyImage],
+  models: [
+    User,
+    City,
+    State,
+    Country,
+    Address,
+    Properties,
+    PropertyImage,
+    Area,
+  ],
   define: {
     timestamps: false,
   },

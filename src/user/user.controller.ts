@@ -17,6 +17,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @HttpCode(HttpStatus.OK)
+  @Get('listOfAreas')
+  listOfAreas() {
+    return this.userService.listOfAreas();
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Post('registerUser')
   registerUser(@Body() dto: RegisterUserDto) {
     return this.userService.registerUser(dto);

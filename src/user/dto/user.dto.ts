@@ -12,6 +12,16 @@ import {
 
 export class AddressDto {
   @ApiProperty({
+    example: 1,
+    type: 'number',
+    format: 'number',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  area_id: number;
+
+  @ApiProperty({
     example: '102',
     type: 'string',
     format: 'string',

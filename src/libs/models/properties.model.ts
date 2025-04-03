@@ -14,6 +14,7 @@ import { Sharing } from '../utils/enum';
 import { User } from './user.model';
 import { Address } from './address.model';
 import { PropertyImage } from './propertyImages.model';
+import { Area } from './area.model';
 
 @Table({ tableName: 'properties' })
 export class Properties extends Model<Properties> {
@@ -21,6 +22,11 @@ export class Properties extends Model<Properties> {
   @MaxLength(11)
   @Column({ allowNull: false })
   landlord_id: number;
+
+  @ForeignKey(() => Area)
+  @MaxLength(11)
+  @Column({ allowNull: false })
+  area_id: number;
 
   @ForeignKey(() => Address)
   @MaxLength(11)
@@ -75,6 +81,9 @@ export class Properties extends Model<Properties> {
 
   @BelongsTo(() => User)
   user: User;
+
+  @BelongsTo(() => Area)
+  area: Area;
 
   @HasMany(() => PropertyImage, { foreignKey: 'property_id' })
   propertyImage: PropertyImage;

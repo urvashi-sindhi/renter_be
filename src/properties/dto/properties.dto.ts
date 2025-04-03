@@ -33,6 +33,16 @@ export class AddPropertyDto {
   })
   @IsNumber()
   @IsOptional()
+  area_id: number;
+
+  @ApiProperty({
+    example: 1,
+    type: 'number',
+    format: 'number',
+    required: false,
+  })
+  @IsNumber()
+  @IsOptional()
   landlord_id: number;
 
   @ApiProperty({
@@ -122,4 +132,66 @@ export class AddPropertyDto {
   @Type(() => AddPropertyImagesDto)
   @IsOptional()
   propertyImage: AddPropertyImagesDto[];
+}
+
+export class listOfPropertiesDto {
+  @ApiProperty({
+    example: 1,
+    type: 'number',
+    format: 'number',
+    required: false,
+  })
+  @IsNumber()
+  @IsOptional()
+  area_id: number;
+
+  @ApiProperty({
+    example: 'ASC',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  sortValue: string;
+
+  @ApiProperty({
+    example: 'id',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  sortKey: string;
+
+  @ApiProperty({
+    example: 10,
+    type: 'number',
+    format: 'number',
+    required: false,
+  })
+  @IsNumber()
+  @IsOptional()
+  pageSize: number;
+
+  @ApiProperty({
+    example: 1,
+    type: 'number',
+    format: 'number',
+    required: false,
+  })
+  @IsNumber()
+  @IsOptional()
+  page: number;
+
+  @ApiProperty({
+    example: 'Raj',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  searchBar: string;
 }
