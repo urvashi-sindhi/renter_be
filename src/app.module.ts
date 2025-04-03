@@ -16,6 +16,8 @@ import { Properties } from './libs/models/properties.model';
 import { PropertyImage } from './libs/models/propertyImages.model';
 import { Area } from './libs/models/area.model';
 import { Notification } from './libs/models/notification.model';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 dotenv.config();
 
 const config: any = {
@@ -47,6 +49,9 @@ const config: any = {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       logging: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     UserModule,
     PropertiesModule,
