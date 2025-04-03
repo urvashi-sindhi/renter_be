@@ -6,4 +6,7 @@ export enum Messages {
   REGISTER_SUCCESS = 'User registered successfully.',
   CREDENTIALS_NOT_MATCH = 'Your credentials does not match.',
   LOGIN_SUCCESS = 'You are login successfully.',
+  ADDED_SUCCESS = 'is added successfully.',
+  IMAGE_REQUIRE = 'Image is require.',
+  ACCESS_DENIED = 'Access to this module is denied.',
 }

@@ -15,3 +15,9 @@ export enum Role {
   RENTER = 'Renter',
   LANDLORD = 'Landlord',
 }
+
+export enum Sharing {
+  SINGLE = 'Single',
+  DOUBLE = 'Double',
+  TRIPLE = 'Triple',
+}
