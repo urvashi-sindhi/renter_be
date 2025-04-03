@@ -14,6 +14,7 @@ import { MaxLength } from 'class-validator';
 import { Role } from '../utils/enum';
 import { Address } from './address.model';
 import { Properties } from './properties.model';
+import { Notification } from './notification.model';
 
 @Table({ tableName: 'user' })
 export class User extends Model<User> {
@@ -76,4 +77,7 @@ export class User extends Model<User> {
 
   @HasMany(() => Properties, { foreignKey: 'landlord_id' })
   properties: Properties;
+
+  @HasMany(() => Notification, { foreignKey: 'user_id' })
+  notification: Notification[];
 }

@@ -9,4 +9,7 @@ export enum Messages {
   ADDED_SUCCESS = 'is added successfully.',
   IMAGE_REQUIRE = 'Image is require.',
   ACCESS_DENIED = 'Access to this module is denied.',
+  DEVICE_TOKEN_NOT_FOUND = 'Device token is not found.',
+  NOTIFICATION_SENT_SUCCESS = 'Notification is Send successfully.',
+  NOTIFICATION_SEND_FAILED = 'Notification is not send.',
 }

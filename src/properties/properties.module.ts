@@ -7,6 +7,7 @@ import { PropertyImage } from 'src/libs/models/propertyImages.model';
 import { User } from 'src/libs/models/user.model';
 import { Address } from 'src/libs/models/address.model';
 import { Area } from 'src/libs/models/area.model';
+import { Notification } from 'src/libs/models/notification.model';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { Area } from 'src/libs/models/area.model';
       User,
       Address,
       Area,
+      Notification,
     ]),
   ],
   controllers: [PropertiesController],
