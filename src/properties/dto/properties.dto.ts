@@ -24,6 +24,48 @@ export class AddPropertyImagesDto {
   image: string;
 }
 
+export class AddressDto {
+  @ApiProperty({
+    example: 1,
+    type: 'number',
+    format: 'number',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  area_id: number;
+
+  @ApiProperty({
+    example: '102',
+    type: 'string',
+    format: 'string',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  address_line1: string;
+
+  @ApiProperty({
+    example: 'gota',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  address_line2: string;
+
+  @ApiProperty({
+    example: 387001,
+    type: 'number',
+    format: 'number',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  pin_code: number;
+}
+
 export class AddPropertyDto {
   @ApiProperty({
     example: 1,
@@ -132,6 +174,12 @@ export class AddPropertyDto {
   @Type(() => AddPropertyImagesDto)
   @IsOptional()
   propertyImage: AddPropertyImagesDto[];
+
+  @ApiProperty({ type: AddressDto, required: false })
+  @ValidateNested({ each: true })
+  @Type(() => AddressDto)
+  @IsOptional()
+  address: AddressDto;
 }
 
 export class listOfPropertiesDto {

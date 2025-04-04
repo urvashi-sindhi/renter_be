@@ -78,10 +78,21 @@ export class PropertiesService {
   }
 
   async addProperties(dto: AddPropertyDto) {
-    const { propertyImage, ...rest } = dto;
+    const { propertyImage, address, ...rest } = dto;
+
+    const createAddress = await this.addressModel.create({
+      country_id: 1,
+      state_id: 1,
+      city_id: 1,
+      area_id: address.area_id,
+      address_line1: address.address_line1,
+      address_line2: address.address_line2,
+      pin_code: address.pin_code,
+    } as Address);
 
     const addProperty = await this.propertiesModel.create({
       ...rest,
+      address_id: createAddress.id,
     } as Properties);
 
     if (propertyImage) {
@@ -135,11 +146,23 @@ export class PropertiesService {
     const sortQuery = sorting(sortKey, sortValue);
 
     const whereCondition: any = {
-      where: { area_id: dto.area_id },
+      where: { area_id: dto.area_id || null },
       attributes: {
         exclude: ['created_at', 'updated_at'],
       },
       include: [
+        {
+          model: this.addressModel,
+          required: true,
+          attributes: {
+            exclude: ['created_at', 'updated_at'],
+          },
+        },
+        {
+          model: this.propertyImageModel,
+          required: false,
+          attributes: ['id', 'image'],
+        },
         {
           model: this.userModel,
           required: true,
@@ -150,14 +173,8 @@ export class PropertiesService {
           required: true,
           attributes: ['id', 'name'],
         },
-        {
-          model: this.addressModel,
-          required: true,
-          attributes: {
-            exclude: ['created_at', 'updated_at'],
-          },
-        },
       ],
+      raw: true,
       order: sortQuery,
     };
 
@@ -220,6 +237,11 @@ export class PropertiesService {
       },
       include: [
         {
+          model: this.propertyImageModel,
+          required: false,
+          attributes: ['id', 'image'],
+        },
+        {
           model: this.userModel,
           required: true,
           attributes: ['id', 'first_name', 'last_name'],
@@ -237,6 +259,7 @@ export class PropertiesService {
           },
         },
       ],
+      raw: true,
     });
 
     if (!propertyData) {
