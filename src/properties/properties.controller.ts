@@ -50,18 +50,11 @@ export class PropertiesController {
     return this.propertiesService.addProperties(dto);
   }
 
-  @Roles(Role.RENTER)
-  @UseGuards(JwtGuard, RolesGuard)
-  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Post('listOfProperties')
   listOfProperties(@Body() dto: listOfPropertiesDto) {
     return this.propertiesService.listOfProperties(dto);
   }
-
-  @Roles(Role.RENTER)
-  @UseGuards(JwtGuard, RolesGuard)
-  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @ApiParam({ example: 1, name: 'propertyId', required: true })
   @Post('viewProperty/:propertyId')
