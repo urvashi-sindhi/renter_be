@@ -141,12 +141,14 @@ export class PropertiesService {
   }
 
   async listOfProperties(dto: listOfPropertiesDto) {
-    const { sortKey, sortValue, searchBar, page, pageSize } = dto;
+    const { sortKey, sortValue, searchBar, page, pageSize, area } = dto;
+
+    const offset = (page - 1) * pageSize;
+    const limit = pageSize;
 
     const sortQuery = sorting(sortKey, sortValue);
 
     const whereCondition: any = {
-      where: { area_id: dto.area_id || null },
       attributes: {
         exclude: ['created_at', 'updated_at'],
       },
@@ -174,9 +176,18 @@ export class PropertiesService {
           attributes: ['id', 'name'],
         },
       ],
-      raw: true,
+      offset,
+      limit,
       order: sortQuery,
     };
+
+    if (area) {
+      whereCondition.where = {
+        area_id: {
+          [Op.in]: area?.map((a) => a.area_id) || [],
+        },
+      };
+    }
 
     if (searchBar) {
       whereCondition.where[Op.or] = [
@@ -220,12 +231,22 @@ export class PropertiesService {
       );
     }
 
+    const responseData = {
+      propertyData: paginatedResult.propertyDetails,
+      totalItems: paginatedResult.propertyDetails.length,
+      totalPages:
+        Math.ceil(paginatedResult.propertyDetails.length / pageSize) || 1,
+      currentPage: page,
+      pageSize: pageSize || 10,
+      numberOfRows: paginatedResult.propertyDetails.length,
+    };
+
     Logger.log(`Property ${Messages.GET_SUCCESS}`);
     return GeneralResponse(
       HttpStatus.OK,
       ResponseStatus.SUCCESS,
       undefined,
-      paginatedResult.propertyDetails,
+      responseData,
     );
   }
 
@@ -259,7 +280,6 @@ export class PropertiesService {
           },
         },
       ],
-      raw: true,
     });
 
     if (!propertyData) {
