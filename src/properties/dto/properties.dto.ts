@@ -182,7 +182,7 @@ export class AddPropertyDto {
   address: AddressDto;
 }
 
-export class listOfPropertiesDto {
+export class SearchAreaDto {
   @ApiProperty({
     example: 1,
     type: 'number',
@@ -192,6 +192,14 @@ export class listOfPropertiesDto {
   @IsNumber()
   @IsOptional()
   area_id: number;
+}
+export class listOfPropertiesDto {
+  @ApiProperty({ type: [SearchAreaDto], required: false })
+  @ValidateNested({ each: true })
+  @IsArray()
+  @Type(() => SearchAreaDto)
+  @IsOptional()
+  area: SearchAreaDto[];
 
   @ApiProperty({
     example: 'ASC',
